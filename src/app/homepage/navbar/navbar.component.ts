@@ -1,7 +1,10 @@
-import { Component } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Component, ElementRef, HostListener } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { forkJoin, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { AuthService } from 'src/app/services/auth.service';
 import { OtpService } from 'src/app/services/otp.service';
 import { UserService } from 'src/app/services/user.service';
@@ -18,11 +21,29 @@ export class NavbarComponent {
     private userService: UserService,
     private authService: AuthService,
     private router: Router,
-    private toastr: ToastrService
-  ) {}
+    private toastr: ToastrService,
+    private httpClient: HttpClient,
+    private eRef: ElementRef
+  ) {
+    // this.searchChanged
+    //   .pipe(
+    //     debounceTime(300), // Wait for 300ms pause
+    //     distinctUntilChanged(), // Ignore if next search term is same
+    //     switchMap((term) => this.fetchSearchSuggestions(term))
+    //   )
+    //   .subscribe((results) => {
+    //     this.searchResults = results;
+    //   });
+  }
 
   myForm!: FormGroup;
   searchInput = '';
+  searchResults: { restaurants: any[]; dishes: any[] } = {
+    restaurants: [],
+    dishes: [],
+  };
+
+  searchChanged = new Subject<string>();
   showLoginModal = false;
   showSignupModal = false;
   isPhoneVerified = false;
@@ -50,6 +71,61 @@ export class NavbarComponent {
     this.authService.isLoggedIn().subscribe((status) => {
       this.isLoggedIn = status;
     });
+  }
+
+  onSearchInputChange() {
+    if (!this.searchInput.trim()) {
+      this.searchResults = { restaurants: [], dishes: [] };
+      return;
+    }
+
+    const params = new HttpParams().set('name', this.searchInput);
+    const restaurantSearch = this.httpClient.get<any[]>(
+      'http://localhost:8090/v1/restaurant/filters',
+      {
+        params,
+      }
+    );
+
+    const dishSearch = this.httpClient.get<any[]>(
+      `http://localhost:8090/v1/dish/dishName`,
+      {
+        params,
+      }
+    );
+
+    forkJoin([restaurantSearch, dishSearch]).subscribe({
+      next: ([restaurants, dishes]) => {
+        this.searchResults = { restaurants, dishes };
+      },
+      error: (err) => {
+        console.error('Search API error', err);
+        this.searchResults = { restaurants: [], dishes: [] };
+      },
+      complete: () => {
+      },
+    });    
+  }
+
+  
+  goToRestaurant(restaurantId: string) {
+    this.searchInput = '';
+    this.searchResults = { restaurants: [], dishes: [] };
+    this.router.navigate(['/restaurant', restaurantId]);
+  }
+
+  goToDish(dishId: string) {
+    this.searchInput = '';
+    this.searchResults = { restaurants: [], dishes: [] };
+    this.router.navigate(['/dish', dishId]);
+  }
+
+  @HostListener('document:click', ['$event'])
+  handleClickOutside(event: MouseEvent) {
+    if (!this.eRef.nativeElement.contains(event.target)) {
+      this.searchInput = '';
+      this.searchResults = { restaurants: [], dishes: [] }; // Hide dropdown
+    }
   }
 
   goToProfile() {
