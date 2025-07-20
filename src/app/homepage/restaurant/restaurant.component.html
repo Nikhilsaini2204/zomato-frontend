@@ -1,0 +1,10 @@
+<div class="restaurant-detail" *ngIf="restaurantDetails">
+    <img [src]="restaurantDetails.restaurantImage" [alt]="restaurantDetails.name" />
+    <h1>{{ restaurantDetails.name }}</h1>
+    <p>{{ restaurantDetails.typeCuisine }}</p>
+    <p>Rating: {{ restaurantDetails.rating }} ★</p>
+    <p>Phone: {{ restaurantDetails.phoneNumber }}</p>
+    <p>Address: {{ restaurantDetails.address }}</p>
+    <p>Timings: {{ restaurantDetails.openingHour }} - {{ restaurantDetails.closingHour }}</p>
+  </div>
+  

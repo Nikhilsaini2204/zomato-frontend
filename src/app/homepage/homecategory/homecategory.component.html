@@ -1,0 +1,17 @@
+
+<div class="homepageCategory">
+    <h2>Eat what makes you happy</h2>
+  
+    <div class="category-grid">
+      <div
+        class="category-card"
+        *ngFor="let category of categories"
+        (click)="goToCategory(category.name)"
+      >
+        <img [src]="category.categoryImg" [alt]="category.name" />
+        <p>{{ category.name | titlecase }}</p>
+      </div>
+    </div>
+  </div>
+  
+  <app-restaurants></app-restaurants>

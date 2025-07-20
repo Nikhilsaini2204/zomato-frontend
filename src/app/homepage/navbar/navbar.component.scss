@@ -1,0 +1,431 @@
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 32px;
+    background-color: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Logo */
+nav img {
+    height: 30px;
+    cursor: pointer;
+}
+
+/* Search box */
+#topInpt {
+    flex: 1;
+    margin: 0 24px;
+    padding: 12px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    outline: none;
+    font-size: 15px;
+    transition: box-shadow 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+#topInpt:focus {
+    box-shadow: 0 0 0 2px #ff645a33;
+    border-color: #ff645a;
+}
+
+/* Buttons */
+nav .loginbtn, .signupbtn {
+    margin-left: 12px;
+    padding: 8px 20px;
+    font-size: 15px;
+    border: none;
+    outline:none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+nav .loginbtn, .signupbtn {
+    background: transparent;
+    color: gray;
+
+    font-weight: 400;
+    font-size: 18px;
+}
+
+nav .loginbtn:hover{
+    color:black
+}
+nav  .signupbtn:hover{
+    color: black;
+}
+/* Overlay */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+}
+
+/* Modal Box */
+.login-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.3);
+    z-index: 1001;
+    animation: popup 0.3s ease-out;
+    font-family: 'Metropolis', sans-serif;
+}
+
+/* Modal Header */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.close-btn {
+    cursor: pointer;
+    font-size: 29px;
+}
+
+/* Modal Body */
+.modal-body {
+    padding: 20px;
+}
+
+.input-container {
+    display: flex;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+
+.input-container select {
+    border: none;
+    padding: 8px;
+    outline: none;
+    margin: 1px;
+}
+
+.input-container input {
+    border: none;
+    border-left: 1px solid #ccc;
+    flex: 1;
+    padding: 8px;
+    outline: none;
+}
+
+.primary-btn {
+    background-color: #ef4f5f;
+    /* default red */
+    color: #fff;
+    border: none;
+    padding: 10px 0;
+    width: 100%;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.primary-btn.verified:disabled{
+    background-color: #4caf50;
+}
+
+
+.loginInpt{
+    border:none;
+
+}
+
+.divider {
+    text-align: center;
+    margin: 16px 0;
+    color: #999;
+}
+
+.divider span {
+    background: #fff;
+    padding: 0 8px;
+}
+
+.secondary-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ddd;
+    background: #fff;
+    width: 100%;
+    padding: 10px 0;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.secondary-btn img {
+    height: 20px;
+    margin-right: 8px;
+}
+
+.modal-footer {
+    text-align: center;
+    font-size: 14px;
+    color: #555;
+    padding: 10px 0 20px;
+}
+
+.modal-footer a {
+    color: #ef4f5f;
+    text-decoration: none;
+
+}
+
+/* Animation */
+@keyframes popup {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -45%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+.terms {
+    display: flex;
+    align-items: flex-start;
+    font-size: 11px;
+    color: #777;
+    padding: 2px 5px;
+    margin-bottom: 15px;
+}
+
+.terms input[type="checkbox"] {
+    margin-top: 3px;
+    /* aligns checkbox with text */
+    margin-right: 8px;
+}
+
+.terms a {
+    color: #ff645a;
+    text-decoration: none;
+}
+
+.otpBtn {
+    background-color: #ff645a;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.footer-btn{
+    background: transparent;
+    border: none;
+    outline: none;
+    color: red;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.input-container.verified {
+    border: 2px solid #4caf50;
+    /* green border */
+    border-radius: 6px;
+}
+
+.input-container.verified input {
+    border: 1px solid #4caf50;
+        /* green */
+        background-color: #e8f5e9;
+    /* light green background */
+}
+
+input.error {
+    border: 1px solid #f44336;
+    /* red */
+    background-color: #ffebee; }
+
+.input-container.verified .otpBtn {
+    background-color: #4caf50;
+    /* green button */
+    color: white;
+    cursor: default;
+}
+
+.input-container {
+    display: flex;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+
+.input-container input {
+    border: none;
+    padding: 8px;
+    flex: 1;
+    outline: none;
+}
+
+.input-container button {
+    background-color: #ef4f5f;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.input-container.verified {
+    border: 1px solid #4CAF50;
+    /* green */
+}
+
+.input-container.invalid {
+    border: 1px solid #e53935;
+    /* red */
+}
+
+.otp-container {
+    display: flex;
+}
+
+.otp-container button {
+    background-color: #ef4f5f;
+    color: #fff;
+    border-radius: 0 6px 6px 0;
+}
+
+.otp-container.invalid input {
+    border: 1px solid #e53935;
+    /* red border for wrong OTP */
+}
+
+input.success {
+    border: 2px solid #4caf50;
+    /* Green border */
+}
+
+input.error {
+    border: 2px solid #f44336;
+    /* Red border */
+}
+
+/* OTP Input Styling */
+.input-container.verified {
+    border: 2px solid #4caf50;
+    /* Green border */
+    border-radius: 6px;
+}
+
+.input-container.verified input {
+    background-color: #e8f5e9;
+    /* Light green background */
+}
+
+.input-container.invalid {
+    border: 2px solid #f44336;
+    /* Red border */
+}
+
+.input-container.invalid input {
+    background-color: #ffebee;
+    /* Light red background */
+}
+
+input.success {
+    border: 2px solid #4caf50;
+    /* Green border */
+}
+
+input.error {
+    border: 2px solid #f44336;
+    /* Red border */
+}
+
+.otpBtn {
+    background-color: #ef4f5f;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-left: 8px;
+}
+
+.otpBtn:disabled {
+    background-color: #4caf50;
+    /* Green when disabled after verification */
+    cursor: not-allowed;
+}
+
+
+.auth-buttons {
+    display: flex;
+    align-items: center;
+    /* vertically center items */
+    gap: 8px;
+    /* space between profile & logout buttons */
+}
+
+.profile-btn {
+    background: transparent;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+}
+
+.profile-btn img {
+    border-radius: 50%;
+    /* circular profile icon */
+    width: 32px;
+    height: 32px;
+}
+
+.logout-btn {
+    background-color: #f44336;
+    /* red button for logout */
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+
+.logout-btn:hover {
+    background-color: #d32f2f;
+    /* darker red on hover */
+}
+
+.toast-success {
+    background-color: #4caf50 !important; // Green
+    color: #fff !important;
+}
+
+.toast-error {
+    background-color: #f44336 !important; // Red
+    color: #fff !important;
+}
+
+.toast-info {
+    background-color: #2196f3 !important; // Blue
+    color: #fff !important;
+}

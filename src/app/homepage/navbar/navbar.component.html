@@ -1,0 +1,236 @@
+<nav>
+  <a routerLink="/" style="cursor: pointer;">
+    <img
+      src="https://b.zmtcdn.com/web_assets/b40b97e677bc7b2ca77c58c61db266fe1603954218.png"
+      alt="logo"
+    />
+  </a>
+  <input
+    type="text"
+    [(ngModel)]="searchInput"
+    placeholder="Search restaurants"
+    id="topInpt"
+  />
+
+  <!-- If user is logged in -->
+  <div class="auth-buttons" *ngIf="isLoggedIn; else showAuthButtons">
+    <button (click)="goToProfile()" class="profile-btn">
+      <img
+        src="https://img.icons8.com/?size=100&id=20749&format=png&color=000000"
+        alt="Profile"
+        width="32"
+      />
+    </button>
+    <button (click)="logout()" class="logout-btn">Logout</button>
+  </div>
+
+  <!-- If user is not logged in -->
+  <ng-template #showAuthButtons>
+    <button (click)="openLogin()" class="loginbtn">Login</button>
+    <button (click)="openSignup()" class="signupbtn">Sign Up</button>
+  </ng-template>
+
+  <!-- Login Modal -->
+  <div class="overlay" *ngIf="showLoginModal" (click)="closeLogin()"></div>
+  <div class="login-modal" *ngIf="showLoginModal">
+    <div class="modal-header">
+      <h2>Login</h2>
+      <span class="close-btn" (click)="closeLogin()">&times;</span>
+    </div>
+
+    <form [formGroup]="loginForm">
+      <div class="modal-body">
+        <!-- Phone Number -->
+        <div class="input-container">
+          <select formControlName="countryCode">
+            <option value="+91">🇮🇳 +91</option>
+            <option value="+1">🇺🇸 +1</option>
+          </select>
+          <input
+            type="text"
+            formControlName="phone"
+            placeholder="Phone"
+            class="loginInpt"
+            [class.error]="
+              loginForm.get('phone')?.invalid &&
+              loginForm.get('phone')?.touched &&
+              !isPhoneVerified
+            "
+          />
+        </div>
+
+        <!-- OTP Field -->
+        <div
+          class="input-container"
+          *ngIf="isOtpSent && !isPhoneVerified"
+          [ngClass]="{
+            verified: isPhoneVerified,
+            invalid: otpError && !isPhoneVerified
+          }"
+        >
+          <input
+            type="text"
+            formControlName="otp"
+            placeholder="Enter OTP"
+            [class.success]="isPhoneVerified"
+            [class.error]="
+              otpError ||
+              (loginForm.get('otp')?.invalid && loginForm.get('otp')?.touched)
+            "
+          />
+
+          <button type="button" class="otpBtn" (click)="verifyLoginOtp()">
+            {{ isPhoneVerified ? "Verified" : "Verify OTP" }}
+          </button>
+        </div>
+
+        <button
+          type="button"
+          class="primary-btn"
+          (click)="sendLoginOtp()"
+          [disabled]="isPhoneVerified || loginForm.get('phone')?.invalid"
+        >
+          {{ isPhoneVerified ? "Verified" : "Send One Time Password" }}
+        </button>
+
+        <div class="divider">
+          <span>or</span>
+        </div>
+
+        <button class="secondary-btn" type="button">
+          <img src="https://img.icons8.com/ios-glyphs/30/000000/new-post.png" />
+          Continue with Email
+        </button>
+      </div>
+    </form>
+
+    <div class="modal-footer">
+      New to Zomato?
+      <button class="footer-btn" (click)="openSignup()">Create account</button>
+    </div>
+  </div>
+
+  <!-- SignUp Modal -->
+  <div class="overlay" *ngIf="showSignupModal" (click)="closeSignup()"></div>
+  <div class="login-modal" *ngIf="showSignupModal">
+    <div class="modal-header">
+      <h2>Sign up</h2>
+      <span class="close-btn" (click)="closeSignup()">&times;</span>
+    </div>
+
+    <!-- Bind formGroup and ngSubmit -->
+    <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+      <div class="modal-body">
+        <!-- Full Name -->
+        <div class="input-container">
+          <input
+            type="text"
+            formControlName="name"
+            placeholder="Full name"
+            [class.error]="
+              myForm.get('name')?.invalid && myForm.get('name')?.touched
+            "
+          />
+        </div>
+
+        <!-- Email -->
+        <div class="input-container">
+          <input
+            type="email"
+            formControlName="email"
+            placeholder="Email"
+            [class.error]="
+              myForm.get('email')?.invalid && myForm.get('email')?.touched
+            "
+          />
+          
+        </div>
+
+        <!-- Password -->
+        <div class="input-container">
+          <input
+            type="password"
+            formControlName="password"
+            placeholder="Password"
+            [class.error]="
+              myForm.get('password')?.invalid && myForm.get('password')?.touched
+            "
+          />
+        </div>
+
+        <!-- Phone -->
+        <div class="input-container" [ngClass]="{ verified: isPhoneVerified }">
+          <input
+            type="text"
+            placeholder="Phone Number"
+            formControlName="number"
+            [readonly]="isPhoneVerified"
+            [class.error]="otpError && !isPhoneVerified"
+          />
+          <button
+            type="button"
+            class="otpBtn"
+            (click)="sendOtp()"
+            [disabled]="isPhoneVerified || myForm.get('number')?.invalid"
+          >
+            {{ isPhoneVerified ? "Verified" : "Send OTP" }}
+          </button>
+          
+        </div>
+        <div class="input-container" *ngIf="isOtpSent && !isPhoneVerified">
+          <input
+            type="text"
+            formControlName="otp"
+            placeholder="Enter OTP"
+            [class.error]="
+              otpError ||
+              (myForm.get('otp')?.invalid && myForm.get('otp')?.touched)
+            "
+          />
+
+          <button
+            type="button"
+            class="otpBtn"
+            (click)="verifyOtp()"
+            [disabled]="isPhoneVerified || myForm.get('otp')?.invalid"
+          >
+            Verify OTP
+          </button>
+        </div>
+
+        <div class="input-container">
+          <input
+            type="text"
+            formControlName="address"
+            id="address"
+            placeholder="Address"
+          />
+        </div>
+
+        <!-- Terms -->
+        <div class="terms">
+          <input type="checkbox" id="termsCheckbox" />
+          <label for="termsCheckbox">
+            I agree to Zomato’s
+            <a href="#">Terms of Service</a>, <a href="#">Privacy Policy</a>,
+            and <a href="#">Content Policies</a>.
+          </label>
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          class="primary-btn"
+          [disabled]="!myForm.valid || !isPhoneVerified"
+        >
+          Create account
+        </button>
+      </div>
+    </form>
+
+    <div class="modal-footer">
+      Already have an account?
+      <button class="footer-btn" (click)="openLogin()">Log in</button>
+    </div>
+  </div>
+</nav>

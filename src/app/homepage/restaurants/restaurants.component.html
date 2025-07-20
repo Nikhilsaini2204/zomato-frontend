@@ -1,0 +1,32 @@
+<div class="restaurant-detail">
+  <h2>Food Delivery Restaurants</h2>
+
+  <div class="dishes-grid">
+    <div
+      class="dish-card"
+      *ngFor="let rest of restaurants"
+      [routerLink]="['/restaurant', rest.name]"
+    >
+      <div class="image-wrapper">
+        <img [src]="rest.restaurantImage" [alt]="rest.name" />
+        <span class="discount-badge">₹75 OFF</span>
+      </div>
+
+      <div class="dish-info">
+        <div class="dish-header">
+          <h3>{{ rest.name }}</h3>
+          <span class="rating">{{ rest.rating }} ★</span>
+        </div>
+        <div class="dish-meta">
+        <p class="cuisines">{{ rest.typeCuisine }}</p>
+        
+
+          <span class="time">40 min</span>
+        </div>
+        <p class="address">{{ rest.address }}</p>
+        <p class="contact">{{ rest.phoneNumber }}</p>
+        <p class="hours">Open: {{ rest.openingHour }} - {{ rest.closingHour }}</p>
+      </div>
+    </div>
+  </div>
+</div>

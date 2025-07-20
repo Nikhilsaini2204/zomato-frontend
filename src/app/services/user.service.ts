@@ -1,0 +1,26 @@
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class UserService {
+  private baseUrl = 'http://localhost:8080';
+
+  constructor(private httpClient: HttpClient) {}
+
+  createUser(data: any): Observable<any> {
+  return this.httpClient.post('http://localhost:8080/v1/user/create', data);
+}
+
+
+  getUserProfile(): Observable<any> {
+    const token = localStorage.getItem('authToken');
+    return this.httpClient.get('http://localhost:8080/v1/user/profile', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+}

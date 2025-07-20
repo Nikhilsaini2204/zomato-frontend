@@ -1,0 +1,45 @@
+.homepageCategory {
+    padding: 2rem;
+    text-align: center;
+
+    h2 {
+        margin-bottom: 1rem;
+        font-size: 2.4rem;
+    }
+
+    .category-grid {
+        margin-top: 30px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 1rem;
+        justify-items: center;
+    }
+
+    .category-card {
+        cursor: pointer;
+        padding: 5px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        text-align: center;
+        border-radius: 10px;
+
+        img {
+            width: 180px;
+            height: 180px;
+            margin: 4px 4px 0px 4px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #f0f0f0;
+        }
+
+        p {
+            margin-top: 0.5rem;
+            font-size: 1.3rem;
+            font-weight: 500;
+        }
+
+        &:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+    }
+}

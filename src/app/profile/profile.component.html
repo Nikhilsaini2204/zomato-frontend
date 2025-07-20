@@ -1,0 +1,17 @@
+<div *ngIf="loading">
+    <p>Loading profile...</p>
+  </div>
+  
+  <div *ngIf="error && !loading">
+    <p class="error">{{ error }}</p>
+  </div>
+  
+  <div *ngIf="userDetails && !loading">
+    <h2>👤 Profile</h2>
+    <p><strong>Name:</strong> {{ userDetails.name }}</p>
+    <p><strong>Phone:</strong> {{ userDetails.number }}</p>
+    <p><strong>Address:</strong> {{ userDetails.address }}</p>
+    <p><strong>Email:</strong> {{ userDetails.email }}</p>
+    <p><strong>Role:</strong> {{ userDetails.role }}</p>
+  </div>
+  
