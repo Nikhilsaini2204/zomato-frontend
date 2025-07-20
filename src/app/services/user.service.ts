@@ -6,21 +6,25 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class UserService {
-  private baseUrl = 'http://localhost:8080';
+  private baseUrl = 'http://localhost:8090';
 
   constructor(private httpClient: HttpClient) {}
 
   createUser(data: any): Observable<any> {
-  return this.httpClient.post('http://localhost:8080/v1/user/create', data);
+  return this.httpClient.post('http://localhost:8090/v1/user/create', data);
 }
 
 
   getUserProfile(): Observable<any> {
     const token = localStorage.getItem('authToken');
-    return this.httpClient.get('http://localhost:8080/v1/user/profile', {
+    return this.httpClient.get('http://localhost:8090/v1/user/profile', {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
+  }
+
+  addRestaurant(restaurantData: any): Observable<any>{
+    return this.httpClient.post('http://localhost:8090/v1/restaurant/create', restaurantData);
   }
 }

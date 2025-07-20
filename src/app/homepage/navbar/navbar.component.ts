@@ -8,6 +8,7 @@ import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { AuthService } from 'src/app/services/auth.service';
 import { OtpService } from 'src/app/services/otp.service';
 import { UserService } from 'src/app/services/user.service';
+import { jwtDecode } from 'jwt-decode';
 
 @Component({
   selector: 'app-navbar',
@@ -20,21 +21,11 @@ export class NavbarComponent {
     private formBuilder: FormBuilder,
     private userService: UserService,
     private authService: AuthService,
-    private router: Router,
+    public router: Router,
     private toastr: ToastrService,
     private httpClient: HttpClient,
     private eRef: ElementRef
-  ) {
-    // this.searchChanged
-    //   .pipe(
-    //     debounceTime(300), // Wait for 300ms pause
-    //     distinctUntilChanged(), // Ignore if next search term is same
-    //     switchMap((term) => this.fetchSearchSuggestions(term))
-    //   )
-    //   .subscribe((results) => {
-    //     this.searchResults = results;
-    //   });
-  }
+  ) {}
 
   myForm!: FormGroup;
   searchInput = '';
@@ -42,7 +33,6 @@ export class NavbarComponent {
     restaurants: [],
     dishes: [],
   };
-
   searchChanged = new Subject<string>();
   showLoginModal = false;
   showSignupModal = false;
@@ -51,8 +41,30 @@ export class NavbarComponent {
   otpError = false;
   loginForm!: FormGroup;
   isLoggedIn = false;
+  addRestaurantForm!: FormGroup;
+  showAddRest = false;
+  userPhoneNumber: string = '';
+  userRole: string = '';
 
   ngOnInit(): void {
+    const token = localStorage.getItem('authToken');
+    this.isLoggedIn = !!token;
+
+    if (token) {
+      const decodedToken: any = jwtDecode(token);
+      this.userRole = decodedToken.role;
+
+      this.userService.getUserProfile().subscribe({
+        next: (profile) => {
+          this.userRole = profile.role;
+          console.log('Fetched user role:', this.userRole);
+        },
+        error: (err) => {
+          console.error('Failed to load profile', err);
+        },
+      });
+    }
+
     this.myForm = this.formBuilder.group({
       name: [null, [Validators.required]],
       email: [null, [Validators.required, Validators.email]],
@@ -70,6 +82,26 @@ export class NavbarComponent {
 
     this.authService.isLoggedIn().subscribe((status) => {
       this.isLoggedIn = status;
+    });
+
+    this.addRestaurantForm = this.formBuilder.group({
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      typeCuisine: ['', Validators.required],
+      address: ['', Validators.required],
+      openingHour: ['', Validators.required],
+      closingHour: ['', Validators.required],
+      time: ['', Validators.required],
+      imageUrl: ['', [Validators.required]],
+    });
+
+    this.userService.getUserProfile().subscribe({
+      next: (profile) => {
+        this.userPhoneNumber = profile.number;
+        this.userRole = profile.role;
+      },
+      error: (err) => {
+        console.error('Failed to load profile', err);
+      },
     });
   }
 
@@ -102,12 +134,50 @@ export class NavbarComponent {
         console.error('Search API error', err);
         this.searchResults = { restaurants: [], dishes: [] };
       },
-      complete: () => {
-      },
-    });    
+      complete: () => {},
+    });
   }
 
-  
+  openAddRest() {
+    this.showAddRest = true;
+  }
+
+  closeAddRest() {
+    this.showAddRest = false;
+  }
+
+  submitRestaurant() {
+    if (this.addRestaurantForm.valid) {
+      const restaurantData = this.addRestaurantForm.value;
+      restaurantData.phoneNumber = this.userPhoneNumber;
+      const payload = {
+        name: restaurantData.name,
+        typeCuisine: restaurantData.typeCuisine,
+        openingHour: restaurantData.openingHour,
+        closingHour: restaurantData.closingHour,
+        phoneNumber: restaurantData.phoneNumber,
+        address: [restaurantData.address],
+        restaurantImage: restaurantData.imageUrl,
+        time: restaurantData.time,
+      };
+
+      this.userService.addRestaurant(payload).subscribe({
+        next: (res) => {
+          this.toastr.success('Restaurant added successfully!', 'Success');
+          this.closeAddRest();
+          this.addRestaurantForm.reset();
+        },
+        error: (err) => {
+          console.error('Failed to add restaurant', err);
+          this.toastr.error('Failed to add restaurant', 'Error');
+        },
+      });
+    } else {
+      console.warn('Form Invalid');
+      this.addRestaurantForm.markAllAsTouched();
+    }
+  }
+
   goToRestaurant(restaurantId: string) {
     this.searchInput = '';
     this.searchResults = { restaurants: [], dishes: [] };
@@ -124,11 +194,11 @@ export class NavbarComponent {
   handleClickOutside(event: MouseEvent) {
     if (!this.eRef.nativeElement.contains(event.target)) {
       this.searchInput = '';
-      this.searchResults = { restaurants: [], dishes: [] }; // Hide dropdown
+      this.searchResults = { restaurants: [], dishes: [] };
     }
   }
 
-  goToProfile() {
+  goToProfile(): void {
     this.router.navigate(['/profile']);
   }
 

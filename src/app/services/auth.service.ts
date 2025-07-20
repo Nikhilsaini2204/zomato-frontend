@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { jwtDecode } from 'jwt-decode';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
@@ -9,7 +10,7 @@ export class AuthService {
 
   constructor() {}
 
-  private hasToken(): boolean {
+  public hasToken(): boolean {
     return !!localStorage.getItem('authToken');
   }
 
@@ -17,10 +18,17 @@ export class AuthService {
     return this.loggedIn.asObservable();
   }
 
-
   login(token: string): void {
     localStorage.setItem('authToken', token);
     this.loggedIn.next(true);
+  }
+
+  isAdmin(): boolean {
+    const token = localStorage.getItem('authToken');
+    if (!token) return false;
+
+    const decoded: any = jwtDecode(token);
+    return decoded.role === 'ADMIN';
   }
 
   logout(): void {

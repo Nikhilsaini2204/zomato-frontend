@@ -54,7 +54,19 @@
 
   <!-- If user is logged in -->
   <div class="auth-buttons" *ngIf="isLoggedIn; else showAuthButtons">
-    <button class="restBtn">Add Restaurant</button>
+    <!-- For Admin -->
+    <button 
+      *ngIf="userRole === 'ADMIN'; else userButtons" 
+      class="restBtn" 
+      (click)="router.navigate(['/requests'])">
+      Show Requests
+    </button>
+  
+    <!-- For Normal Users -->
+    <ng-template #userButtons>
+      <button class="restBtn" (click)="openAddRest()">Add Restaurant</button>
+    </ng-template>
+  
     <button (click)="goToProfile()" class="profile-btn">
       <img
         src="https://img.icons8.com/?size=100&id=20749&format=png&color=000000"
@@ -62,15 +74,125 @@
         width="32"
       />
     </button>
-    
     <button (click)="logout()" class="logout-btn">Logout</button>
   </div>
+  
+
+
 
   <!-- If user is not logged in -->
   <ng-template #showAuthButtons>
     <button (click)="openLogin()" class="loginbtn">Login</button>
     <button (click)="openSignup()" class="signupbtn">Sign Up</button>
   </ng-template>
+
+
+
+
+
+  <!-- Add Restaurant Overlay -->
+<div class="overlay" *ngIf="showAddRest" (click)="closeAddRest()"></div>
+
+<div class="login-modal" *ngIf="showAddRest">
+  <div class="modal-header">
+    <h2>Add Restaurant</h2>
+    <span class="close-btn" (click)="closeAddRest()">&times;</span>
+  </div>
+
+  <form [formGroup]="addRestaurantForm" (ngSubmit)="submitRestaurant()">
+    <div class="modal-body">
+      <!-- Restaurant Name -->
+      <div class="input-container">
+        <input
+          type="text"
+          formControlName="name"
+          placeholder="Restaurant Name"
+          [class.error]="
+            addRestaurantForm.get('name')?.invalid && addRestaurantForm.get('name')?.touched
+          "
+        />
+      </div>
+
+      <!-- Cuisine Type -->
+      <div class="input-container">
+        <input
+          type="text"
+          formControlName="typeCuisine"
+          placeholder="Cuisine Type (e.g., Italian, Indian)"
+          [class.error]="
+            addRestaurantForm.get('cuisine')?.invalid && addRestaurantForm.get('cuisine')?.touched
+          "
+        />
+      </div>
+
+      <!-- Address -->
+      <div class="input-container">
+        <input
+          type="text"
+          formControlName="address"
+          placeholder="Address"
+          [class.error]="
+            addRestaurantForm.get('address')?.invalid && addRestaurantForm.get('address')?.touched
+          "
+        />
+      </div>
+
+      <!-- Opening Hour -->
+      <div class="input-container">
+        <input
+          type="text"
+          formControlName="openingHour"
+          placeholder="Opening Hour [Format: HH:mm:SS]"
+       
+        />
+      </div>
+
+      <!-- Closing Hour -->
+      <div class="input-container">
+        <input
+          type="text"
+          formControlName="closingHour"
+          placeholder="Closing Hour [Format: HH:mm:SS]"
+          
+        />
+      </div>
+
+      <!-- Average Time -->
+      <div class="input-container">
+        <input
+          type="text"
+          formControlName="time"
+          placeholder="Time [Example: 40 min]"
+        />
+      </div>
+
+      <!-- Image URL -->
+      <div class="input-container">
+        <input
+          type="text"
+          formControlName="imageUrl"
+          placeholder="Image URL"
+          [class.error]="
+            addRestaurantForm.get('imageUrl')?.invalid && addRestaurantForm.get('imageUrl')?.touched
+          "
+        />
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        class="primary-btn"
+        [disabled]="!addRestaurantForm.valid"
+      >
+        Add Restaurant
+      </button>
+    </div>
+  </form>
+</div>
+
+
+
+
 
   <!-- Login Modal -->
   <div class="overlay" *ngIf="showLoginModal" (click)="closeLogin()"></div>

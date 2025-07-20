@@ -11,9 +11,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { NavbarComponent } from './homepage/navbar/navbar.component';
 import { SearchResultsComponent } from './search-results/search-results.component';
+import { RequestComponent } from './request/request.component';
 
 @NgModule({
-  declarations: [AppComponent, ProfileComponent, SearchResultsComponent],
+  declarations: [AppComponent, ProfileComponent, SearchResultsComponent, RequestComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
