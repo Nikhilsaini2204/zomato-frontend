@@ -1,10 +1,102 @@
-<div class="restaurant-detail" *ngIf="restaurantDetails">
-    <img [src]="restaurantDetails.restaurantImage" [alt]="restaurantDetails.name" />
-    <h1>{{ restaurantDetails.name }}</h1>
-    <p>{{ restaurantDetails.typeCuisine }}</p>
-    <p>Rating: {{ restaurantDetails.rating }} ★</p>
-    <p>Phone: {{ restaurantDetails.phoneNumber }}</p>
-    <p>Address: {{ restaurantDetails.address }}</p>
-    <p>Timings: {{ restaurantDetails.openingHour }} - {{ restaurantDetails.closingHour }}</p>
+<div class="restaurant-container" *ngIf="restaurantDetails">
+  <!-- Header -->
+  <div class="restaurant-header">
+    <div class="header-left">
+      <h1>{{ restaurantDetails.name | titlecase }}</h1>
+      <p class="tags">{{ restaurantDetails.typeCuisine }}</p>
+      <p class="address">{{ restaurantDetails.address }}</p>
+      <p class="timings">
+        Open now – {{ restaurantDetails.openingHour }} to
+        {{ restaurantDetails.closingHour }}
+      </p>
+    </div>
+    <div class="header-right">
+      <img
+        class="restaurant-img"
+        [src]="restaurantDetails.restaurantImage"
+        [alt]="restaurantDetails.name"
+      />
+      <div class="ratings">⭐ {{ restaurantDetails.rating }}</div>
+    </div>
   </div>
-  
+
+  <!-- Main content -->
+  <div class="order-section">
+    <!-- Left: Category list -->
+    <div class="menu-left">
+      <ul>
+        <li
+          *ngFor="let category of restaurantCategories"
+          [class.active]="category === selectedCategory"
+          (click)="selectCategory(category)"
+        >
+          {{ category.name | titlecase }}
+        </li>
+      </ul>
+    </div>
+
+    <!-- Right: Dishes list -->
+    <div class="menu-right">
+      <h2 class="category-title">{{ selectedCategory?.name | titlecase }}</h2>
+
+      <div *ngIf="dishes.length > 0; else noDishes" class="dishes-grid">
+        <div
+          class="dish-card"
+          *ngFor="let dish of dishes"
+          [class.disabled]="!dish.available"
+          (click)="dish.available && openDishOverlay(dish)"
+        >
+          <div class="dish-image-container">
+            <img [src]="dish.image" alt="{{ dish.name }}" />
+          </div>
+          <div class="dish-info">
+            <div class="dish-header">
+              <h3>{{ dish.name }}</h3>
+              <span class="dish-price">₹{{ dish.price }}</span>
+            </div>
+            <p class="dish-description">{{ dish.description }}</p>
+            <button
+              class="add-to-cart"
+              [disabled]="!dish.available"
+              (click)="
+                dish.available && addToCart(dish); $event.stopPropagation()
+              "
+            >
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dish Overlay Modal -->
+      <div
+        class="dish-overlay"
+        *ngIf="selectedDish"
+        (click)="closeDishOverlay()"
+      >
+        <div class="dish-overlay-content" (click)="$event.stopPropagation()">
+          <button class="close-btn" (click)="closeDishOverlay()">×</button>
+          <img
+            class="dish-overlay-image"
+            [src]="selectedDish.image"
+            [alt]="selectedDish.name"
+          />
+          <div class="dish-overlay-info">
+            <h2>{{ selectedDish.name }}</h2>
+            <p class="price">₹{{ selectedDish.price }}</p>
+            <p class="description">{{ selectedDish.description }}</p>
+            <p>Preparation Time: {{ selectedDish.prepTime }}</p>
+
+            <button class="add-to-cart" (click)="addToCart(selectedDish)">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #noDishes>
+        <p class="no-dishes">No dishes available in this category.</p>
+      </ng-template>
+    </div>
+  </div>
+</div>

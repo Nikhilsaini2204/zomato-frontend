@@ -32,6 +32,7 @@ export class RequestComponent implements OnInit {
     const params = new HttpParams().set('name', name.trim());
     this.requestService.approveRequests(params).subscribe({
       next: (res) => {
+        // now i want to make call to userService to perform change role
         this.fetchRequests();
       },
       error: (err) => {

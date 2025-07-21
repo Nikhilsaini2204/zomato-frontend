@@ -45,6 +45,7 @@ export class NavbarComponent {
   showAddRest = false;
   userPhoneNumber: string = '';
   userRole: string = '';
+  userId:string = '';
 
   ngOnInit(): void {
     const token = localStorage.getItem('authToken');
@@ -57,7 +58,8 @@ export class NavbarComponent {
       this.userService.getUserProfile().subscribe({
         next: (profile) => {
           this.userRole = profile.role;
-          console.log('Fetched user role:', this.userRole);
+          this.userId = profile.id;
+          console.log('Fetched user role:', this.userId);
         },
         error: (err) => {
           console.error('Failed to load profile', err);
@@ -150,9 +152,12 @@ export class NavbarComponent {
     if (this.addRestaurantForm.valid) {
       const restaurantData = this.addRestaurantForm.value;
       restaurantData.phoneNumber = this.userPhoneNumber;
+      restaurantData.ownerId = this.userId;
+
       const payload = {
         name: restaurantData.name,
         typeCuisine: restaurantData.typeCuisine,
+        ownerId: restaurantData.ownerId,
         openingHour: restaurantData.openingHour,
         closingHour: restaurantData.closingHour,
         phoneNumber: restaurantData.phoneNumber,
@@ -160,6 +165,7 @@ export class NavbarComponent {
         restaurantImage: restaurantData.imageUrl,
         time: restaurantData.time,
       };
+      console.log('Payload being sent:', payload);
 
       this.userService.addRestaurant(payload).subscribe({
         next: (res) => {
