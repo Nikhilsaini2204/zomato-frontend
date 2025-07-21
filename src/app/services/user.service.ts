@@ -11,9 +11,8 @@ export class UserService {
   constructor(private httpClient: HttpClient) {}
 
   createUser(data: any): Observable<any> {
-  return this.httpClient.post('http://localhost:8090/v1/user/create', data);
-}
-
+    return this.httpClient.post('http://localhost:8090/v1/user/create', data);
+  }
 
   getUserProfile(): Observable<any> {
     const token = localStorage.getItem('authToken');
@@ -24,14 +23,20 @@ export class UserService {
     });
   }
 
-  addRestaurant(restaurantData: any): Observable<any>{
-    return this.httpClient.post('http://localhost:8090/v1/restaurant/create', restaurantData);
+
+  addRestaurant(restaurantData: any): Observable<any> {
+    return this.httpClient.post(
+      'http://localhost:8090/v1/restaurant/create',
+      restaurantData
+    );
   }
 
-  changeRole(phone:string): Observable<any>{
-    const params = new HttpParams().set('phone', phone);
-    return this.httpClient.post('http://localhost:8090/v1/user/owner',{
-      params
-    })
+  changeRole(id: string): Observable<any> {
+    const params = new HttpParams().set('userId', id);
+    return this.httpClient.post(
+      'http://localhost:8090/v1/user/owner',
+      {},
+      { params }
+    );
   }
 }

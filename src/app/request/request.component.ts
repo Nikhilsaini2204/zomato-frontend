@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RequestService } from '../services/request.service';
 import { HttpParams } from '@angular/common/http';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-request',
@@ -9,7 +10,7 @@ import { HttpParams } from '@angular/common/http';
 })
 export class RequestComponent implements OnInit {
   requests: any[] = [];
-  constructor(private requestService: RequestService) {}
+  constructor(private requestService: RequestService, private userService:UserService) {}
 
   ngOnInit(): void {
     this.fetchRequests();
@@ -26,13 +27,20 @@ export class RequestComponent implements OnInit {
     });
   }
 
-  approve(name: string, event: Event) {
+  approve(name: string, ownerId: string, event: Event) {
     event.stopPropagation();
     console.log('Approved:', name);
     const params = new HttpParams().set('name', name.trim());
     this.requestService.approveRequests(params).subscribe({
       next: (res) => {
-        // now i want to make call to userService to perform change role
+        this.userService.changeRole(ownerId).subscribe({
+          next:(res)=>{
+            console.log("role changed")
+          },
+          error:(err)=>{
+            console.error('Error changing role', err);
+          }
+        })
         this.fetchRequests();
       },
       error: (err) => {

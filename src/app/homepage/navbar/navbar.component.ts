@@ -59,7 +59,6 @@ export class NavbarComponent {
         next: (profile) => {
           this.userRole = profile.role;
           this.userId = profile.id;
-          console.log('Fetched user role:', this.userId);
         },
         error: (err) => {
           console.error('Failed to load profile', err);

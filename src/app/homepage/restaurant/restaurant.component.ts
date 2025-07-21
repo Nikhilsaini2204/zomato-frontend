@@ -1,6 +1,9 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { CartService } from 'src/app/services/cart.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-restaurant',
@@ -15,8 +18,9 @@ export class RestaurantComponent {
   selectedCategory: any;
   dishes: any[] = [];
   selectedDish: any = null;
+  userId:string = '';
 
-  constructor(private route: ActivatedRoute, private http: HttpClient) {}
+  constructor(private route: ActivatedRoute, private http: HttpClient, private cartService: CartService, private userService: UserService, private toastr: ToastrService) {}
 
   ngOnInit(): void {
     this.restaurantName = this.route.snapshot.paramMap.get('name')!;
@@ -38,7 +42,6 @@ export class RestaurantComponent {
         if (categories.length > 0) {
           this.selectedCategory = categories[0];
           this.categoryName = categories[0].name;
-          this.fetchDishes();
           this.fetchDishes();
         }
       });
@@ -64,7 +67,6 @@ export class RestaurantComponent {
       .subscribe({
         next: (data) => {
           this.dishes = data;
-          console.log('Fetched dishes:', this.dishes);
         },
         error: (error) => {
           console.error('Error fetching dishes', error);
@@ -79,8 +81,30 @@ export class RestaurantComponent {
   }
 
   addToCart(dish: any) {
-    console.log('Added to cart:', dish);
-    // You can also push to a cart array if you’re tracking selected items:
-    // this.cart.push(dish);
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      alert('⚠️ You must log in to add items to cart.');
+      return;
+    }
+
+    console.log('Dish ID:', dish.id);
+
+    this.userService.getUserProfile().subscribe({
+      next: (res) => {
+        const userId = res.id; 
+        console.log(userId);
+        this.cartService.addItemToCart(dish.id, userId).subscribe({
+          next: () => {
+            this.toastr.success('Item added successfully!', 'Success');
+          },
+          error: (err) => {
+            console.error(' Failed to add to cart:', err);
+          },
+        });
+      },
+      error: (err) => {
+        console.error('Error fetching user profile', err);
+      },
+    });
   }
 }

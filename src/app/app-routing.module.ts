@@ -6,6 +6,8 @@ import { CategorydetailComponent } from './homepage/homecategory/categorydetail/
 import { RestaurantComponent } from './homepage/restaurant/restaurant.component';
 import { RequestComponent } from './request/request.component';
 import { AdminGuard } from './auth/admin.guard';
+import { RestaurantmanageComponent } from './restaurantmanage/restaurantmanage.component';
+import { CartComponent } from './cart/cart.component';
 
 const routes: Routes = [
   { path: '', component: HomepageComponent },
@@ -17,6 +19,8 @@ const routes: Routes = [
     component: RequestComponent,
     canActivate: [AdminGuard],
   },
+  {path:'managerestaurant', component:RestaurantmanageComponent},
+  {path:'cart', component:CartComponent}
 ];
 
 @NgModule({

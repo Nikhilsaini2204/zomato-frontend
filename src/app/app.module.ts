@@ -12,9 +12,11 @@ import { ToastrModule } from 'ngx-toastr';
 import { NavbarComponent } from './homepage/navbar/navbar.component';
 import { SearchResultsComponent } from './search-results/search-results.component';
 import { RequestComponent } from './request/request.component';
+import { RestaurantmanageComponent } from './restaurantmanage/restaurantmanage.component';
+import { CartComponent } from './cart/cart.component';
 
 @NgModule({
-  declarations: [AppComponent, ProfileComponent, SearchResultsComponent, RequestComponent],
+  declarations: [AppComponent, ProfileComponent, SearchResultsComponent, RequestComponent, RestaurantmanageComponent, CartComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

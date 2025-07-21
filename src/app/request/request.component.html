@@ -27,7 +27,7 @@
   
           <!-- Approve / Reject buttons -->
           <div class="action-buttons">
-            <button class="approve-btn" (click)="approve(rest.name, $event)">
+            <button class="approve-btn" (click)="approve(rest.name, rest.ownerId, $event)">
               Approve
             </button>
             <button class="reject-btn" (click)="rejectRequest(rest.name, $event)">

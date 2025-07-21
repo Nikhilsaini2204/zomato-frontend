@@ -54,6 +54,12 @@
 
   <!-- If user is logged in -->
   <div class="auth-buttons" *ngIf="isLoggedIn; else showAuthButtons">
+
+    <button 
+    class="restBtn" 
+    (click)="router.navigate(['/cart'])">
+    🛒 Cart
+  </button>
     <!-- For Admin -->
     <button 
       *ngIf="userRole === 'ADMIN'; else userButtons" 
@@ -62,10 +68,21 @@
       Show Requests
     </button>
   
-    <!-- For Normal Users -->
-    <ng-template #userButtons>
-      <button class="restBtn" (click)="openAddRest()">Add Restaurant</button>
-    </ng-template>
+   <!-- For Normal Users -->
+<ng-template #userButtons>
+  <button
+    class="restBtn"
+    *ngIf="userRole === 'OWNER'; else addRestaurantButton"
+    (click)="router.navigate(['/managerestaurant'])"
+  >
+    Go to Restaurant
+  </button>
+
+  <ng-template #addRestaurantButton>
+    <button class="restBtn" (click)="openAddRest()">Add Restaurant</button>
+  </ng-template>
+</ng-template>
+
   
     <button (click)="goToProfile()" class="profile-btn">
       <img

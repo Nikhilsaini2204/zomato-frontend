@@ -1,0 +1,151 @@
+<h1>Restaurant Details</h1>
+
+<div class="restaurant-header" *ngIf="restaurant">
+  <div class="header-left">
+    <h2>{{ restaurant?.name | titlecase }}</h2>
+    <p class="tags">{{ restaurant?.typeCuisine }}</p>
+    <p class="address">{{ restaurant?.address }}</p>
+    <p class="address">+91-{{ restaurant?.phoneNumber }}</p>
+    <p class="timings">
+      Open now – {{ restaurant?.openingHour }} to {{ restaurant?.closingHour }}
+    </p>
+  </div>
+  <div class="header-right">
+    <img
+      class="restaurant-img"
+      [src]="restaurant?.restaurantImage"
+      [alt]="restaurant.name"
+    />
+    <div class="rating">{{ restaurant?.rating }} ★</div>
+  </div>
+</div>
+
+<div class="functions">
+    <div>
+        <button class="primary-btn1" (click)="openAddItem()">Add Item</button>
+      </div>
+      <div>
+        <button class="primary-btn1" (click)="openCategory()">Add Category</button>
+      </div>
+</div>
+
+
+
+<div class="overlay" *ngIf="showAddItem" (click)="openAddItem()"></div>
+
+<div class="login-modal" *ngIf="showAddItem">
+  <div class="modal-header">
+    <h2>Add Item</h2>
+    <span class="close-btn" (click)="closeAddItem()">&times;</span>
+  </div>
+
+  <form [formGroup]="addItemForm" (ngSubmit)="submitItem()">
+    <div class="modal-body">
+      <!-- Dish Name -->
+      <div class="input-container">
+        <input type="text" formControlName="name" placeholder="Dish Name" />
+      </div>
+
+      <!-- Description Type -->
+      <div class="input-container">
+        <input
+          type="text"
+          formControlName="description"
+          placeholder="Description"
+        />
+      </div>
+
+      <!-- Category Dropdown -->
+      <div class="input-container">
+        <select formControlName="category">
+          <option value="" disabled selected>Select Category</option>
+          <option *ngFor="let category of realCategories" [value]="category.id">
+            {{ category.name | titlecase }}
+          </option>
+        </select>
+      </div>
+
+      <!-- image -->
+      <div class="input-container">
+        <input type="text" formControlName="imageUrl" placeholder="Image Url" />
+      </div>
+
+      <!-- Price-->
+      <div class="input-container">
+        <input type="text" formControlName="price" placeholder="Price" />
+      </div>
+
+      <!--Prep Time-->
+      <div class="input-container">
+        <input
+          type="text"
+          formControlName="prepTime"
+          placeholder="Preparing Time"
+        />
+      </div>
+
+      <!-- Daily Capacity -->
+      <div class="input-container">
+        <input
+          type="text"
+          formControlName="dailyCap"
+          placeholder="Daily Capacity of Dish"
+        />
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="primary-btn">Add Item</button>
+    </div>
+  </form>
+</div>
+
+
+
+
+<!-- Add Category -->
+
+<div class="overlay" *ngIf="showCategory" (click)="openCategory()"></div>
+
+<div class="login-modal" *ngIf="showCategory">
+  <div class="modal-header">
+    <h2>Add Category</h2>
+    <span class="close-btn" (click)="closeCategory()">&times;</span>
+  </div>
+
+  <form [formGroup]="addCategoryForm" (ngSubmit)="submitCategory()">
+    <div class="modal-body">
+      <!-- Category Name -->
+      <div class="input-container">
+        <input type="text" formControlName="name" placeholder="Category Name" />
+      </div>
+
+      <div class="input-container">
+        <input type="text" formControlName="categoryImg" placeholder="Category Name" />
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="primary-btn">Add Category</button>
+    </div>
+  </form>
+</div>
+
+<div class="heading"><h1>Added Items</h1></div>
+<div class="dish-container">
+  
+  <div *ngFor="let dish of dishes" class="dish-card">
+    <!-- Dish Image -->
+    <img
+      [src]="dish.image"
+      alt="{{ dish.name }}"
+      class="dish-image"
+    />
+
+    <!-- Dish Info -->
+    <div class="dish-details">
+      <h3 class="dish-name">{{ dish.name }}</h3>
+      <p class="dish-description">{{ dish.description }}</p>
+      <p class="dish-price">₹{{ dish.price }}</p>
+    </div>
+  </div>
+</div>
+
