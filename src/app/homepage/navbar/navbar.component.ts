@@ -261,6 +261,7 @@ export class NavbarComponent {
 
           this.loginForm.reset();
           this.closeLogin();
+          window.location.reload();
 
           // Optionally store JWT
           localStorage.setItem('authToken', res.token);
@@ -389,6 +390,7 @@ export class NavbarComponent {
 
           this.myForm.reset();
           this.closeSignup();
+          window.location.reload();
         },
         error: (error) => {
           console.error('Error creating user:', error);
