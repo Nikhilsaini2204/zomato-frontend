@@ -87,12 +87,10 @@ export class RestaurantComponent {
       return;
     }
 
-    console.log('Dish ID:', dish.id);
 
     this.userService.getUserProfile().subscribe({
       next: (res) => {
         const userId = res.id; 
-        console.log(userId);
         this.cartService.addItemToCart(dish.id, userId).subscribe({
           next: () => {
             this.toastr.success('Item added successfully!', 'Success');

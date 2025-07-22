@@ -1,2 +1,32 @@
-
 <app-homecategory></app-homecategory>
+
+<!-- Floating Button -->
+<button class="floating-btn" (click)="openOrdersOverlay()">
+  🛒
+</button>
+
+<!-- Overlay for Orders -->
+<div
+  class="orders-overlay"
+  [class.show]="showOrdersOverlay"
+  (click)="closeOrdersOverlay()"
+>
+  <div class="orders-dialog" (click)="$event.stopPropagation()">
+    <h2>Your Orders</h2>
+
+    <div *ngIf="loadingOrders" class="loading">Loading orders...</div>
+    <div *ngIf="!loadingOrders && orders.length === 0">
+      No orders found.
+    </div>
+
+    <ul *ngIf="!loadingOrders && orders.length > 0">
+      <li *ngFor="let order of orders" class="liItem">
+        <strong>Order ID:</strong> {{ order.id }}<br />
+        <strong>Status:</strong> {{ order.status }}<br />
+        <strong>Total:</strong> {{ order.amount }}/-
+      </li>
+    </ul>
+
+    <button class="close-btn" (click)="closeOrdersOverlay()">Close</button>
+  </div>
+</div>

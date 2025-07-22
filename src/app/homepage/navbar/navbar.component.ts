@@ -390,7 +390,7 @@ export class NavbarComponent {
 
           if (response.token) {
             this.authService.login(response.token); // Save token + set loggedIn=true
-            localStorage.setItem('userEmail', formData.email); // Optional: store user info
+            localStorage.setItem('userEmail', formData.email); //store user info
           }
 
           this.myForm.reset();

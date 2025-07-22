@@ -4,6 +4,7 @@ import { UserService } from '../services/user.service';
 import { HttpClient } from '@angular/common/http';
 import { CartService } from '../services/cart.service';
 import { forkJoin } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-cart',
@@ -19,7 +20,8 @@ export class CartComponent implements OnInit {
   constructor(
     private userService: UserService,
     private httpClient: HttpClient,
-    private cartService: CartService
+    private cartService: CartService,
+    private toastrService: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -64,7 +66,6 @@ export class CartComponent implements OnInit {
                 dishDetails: dishDetails[index],
               }));
 
-              console.log('Enriched cart:', this.cart);
             },
             error: (err) => {
               console.error('Error fetching dish details:', err);
@@ -114,10 +115,53 @@ export class CartComponent implements OnInit {
       return total + item.dishDetails.price * item.quantity;
     }, 0);
   }
-  
+
   placeOrder() {
-    console.log('Placing order...');
-    alert('✅ Your order has been placed!');
-    // Call API to place order here
+    if (this.cart.length === 0) {
+      console.warn('Cart is empty. Cannot place order.');
+      return;
+    }
+
+    const dishes: string[] = [];
+    this.cart.forEach((item) => {
+      for (let i = 0; i < item.quantity; i++) {
+        dishes.push(item.dishId);
+      }
+    });
+
+    const restaurantId = this.cart[0].dishDetails.restaurantId;
+
+    const orderPayload = {
+      userId: this.userId,
+      restaurantId: restaurantId,
+      amount: this.getTotalAmount(),
+      dishes: dishes,
+    };
+
+
+    this.httpClient
+      .post('http://localhost:8090/v1/order/create', orderPayload)
+      .subscribe({
+        next: (response) => {
+          this.toastrService.success('Order placed successfully!', 'Success');
+          this.cart = [];
+          this.deleteCart();
+        },
+        error: (err) => {
+          console.error('Error placing order:', err);
+        },
+      });
+  }
+  deleteCart() {
+    this.httpClient
+      .delete(`http://localhost:8090/cart/clear/${this.userId}`)
+      .subscribe({
+        next: () => {
+          console.log('Cart cleared successfully.');
+        },
+        error: (err) => {
+          console.error('Error clearing cart:', err);
+        },
+      });
   }
 }

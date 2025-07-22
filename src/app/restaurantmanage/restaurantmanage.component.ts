@@ -16,7 +16,10 @@ export class RestaurantmanageComponent implements OnInit {
   restaurantName: string = '';
   showCategory = false;
   addCategoryForm!: FormGroup;
-dishes:any[] = [];
+  restaurantId:string = "";
+  showOrders = false;
+  dishes: any[] = [];
+  orders: any[] = [];
 
   constructor(
     private userService: UserService,
@@ -28,21 +31,40 @@ dishes:any[] = [];
     this.fetchRestaurant();
     this.initializeAddItemForm();
     this.initializeAddCategoryForm();
-
   }
 
-  fetchDishes(){
-    const params = new HttpParams().set('name', this.restaurantName)
-    this.httpClient.get<any[]>('http://localhost:8090/v1/dish/restaurant', {
-      params
-    }).subscribe({
-      next:(res)=>{
-        this.dishes = res;
-      },
-      error:(err)=>{
-        console.error("Error fetching dishes", err);
-      }
-    })
+  fetchOrders() {
+    if (!this.restaurant?.id) {
+      console.error('Restaurant ID is missing. Cannot fetch orders.');
+      return;
+    }
+    const params = new HttpParams().set('restaurantId', this.restaurant.id);
+    this.httpClient
+      .get<any[]>(`http://localhost:8090/v1/order/restaurant`, { params })
+      .subscribe({
+        next: (res) => {
+          this.orders = res;
+        },
+        error: (err) => {
+          console.error('Error fetching orders:', err);
+        },
+      });
+  }
+
+  fetchDishes() {
+    const params = new HttpParams().set('name', this.restaurantName);
+    this.httpClient
+      .get<any[]>('http://localhost:8090/v1/dish/restaurant', {
+        params,
+      })
+      .subscribe({
+        next: (res) => {
+          this.dishes = res;
+        },
+        error: (err) => {
+          console.error('Error fetching dishes', err);
+        },
+      });
   }
 
   fetchRestaurant() {
@@ -53,6 +75,7 @@ dishes:any[] = [];
         this.httpClient.get(apiUrl).subscribe({
           next: (res: any) => {
             this.restaurant = res;
+            this.restaurantId = res.id;
             this.restaurantName = res.name;
             this.fetchCategories();
             this.fetchDishes();
@@ -121,6 +144,14 @@ dishes:any[] = [];
   closeAddItem() {
     this.showAddItem = false;
   }
+  openOrders() {
+    this.showOrders = true;
+    this.fetchOrders(); 
+  }
+
+  closeOrders() {
+    this.showOrders = false;
+  }
 
   submitItem() {
     if (!this.restaurant || !this.restaurant.id) {
@@ -130,15 +161,13 @@ dishes:any[] = [];
 
     if (this.addItemForm.valid) {
       const formData = this.addItemForm.value;
-      console.log('Item Data:', formData);
 
-      const restaurantId = this.restaurant.id;
       const categoryId = this.addItemForm.value.category;
 
       const addItemPayload = {
         name: formData.name,
         description: formData.description,
-        image: formData.imageUrl, 
+        image: formData.imageUrl,
         price: formData.price,
         prepTime: formData.prepTime,
         dailyCapacity: formData.dailyCap,
@@ -147,12 +176,11 @@ dishes:any[] = [];
 
       this.httpClient
         .post(
-          `http://localhost:8090/v1/dish/restaurant/${restaurantId}/${categoryId}/addItem`,
+          `http://localhost:8090/v1/dish/restaurant/${this.restaurantId}/${categoryId}/addItem`,
           addItemPayload
         )
         .subscribe({
           next: (res) => {
-            console.log('Item created successfully:', res);
             this.closeAddItem();
           },
           error: (err) => {

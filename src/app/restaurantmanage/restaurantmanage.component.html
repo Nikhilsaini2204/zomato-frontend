@@ -27,7 +27,37 @@
       <div>
         <button class="primary-btn1" (click)="openCategory()">Add Category</button>
       </div>
+      <div>
+        <button class="primary-btn1" (click)="openOrders()">Orders</button>
+      </div>
 </div>
+
+
+<!-- Orders Overlay -->
+<div class="overlay" *ngIf="showOrders" (click)="closeOrders()"></div>
+
+<div class="login-modal" *ngIf="showOrders">
+  <div class="modal-header">
+    <h2>Orders</h2>
+    <span class="close-btn" (click)="closeOrders()">&times;</span>
+  </div>
+
+  <div class="modal-body">
+    <div *ngIf="orders.length === 0" class="no-orders">
+      <p>No orders found for this restaurant.</p>
+    </div>
+
+    <div *ngFor="let order of orders" class="order-card">
+      <h3>Order #{{ order.id }}</h3>
+      <p><strong>User ID:</strong> {{ order.userId }}</p>
+      <p><strong>Amount:</strong> ₹{{ order.amount }}</p>
+      <p><strong>Dishes:</strong> {{ order.dishes.join(', ') }}</p>
+      <p><strong>Status:</strong> {{ order.status }}</p>
+      <p><strong>Placed At:</strong> {{ order.placedOn | date: 'short' }}</p>
+    </div>
+  </div>
+</div>
+
 
 
 
