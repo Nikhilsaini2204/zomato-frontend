@@ -182,6 +182,7 @@ export class RestaurantmanageComponent implements OnInit {
         .subscribe({
           next: (res) => {
             this.closeAddItem();
+            window.location.reload();
           },
           error: (err) => {
             console.error('Error creating item:', err);
@@ -216,6 +217,7 @@ export class RestaurantmanageComponent implements OnInit {
             console.log('Category created successfully:', res);
             this.fetchCategories();
             this.closeCategory();
+            window.location.reload();
           },
           error: (err) => {
             console.error('Error creating category:', err);

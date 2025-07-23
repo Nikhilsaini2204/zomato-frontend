@@ -82,9 +82,16 @@ export class CartComponent implements OnInit {
     this.cartService.addItemToCart(item.dishId, this.userId).subscribe({
       next: () => {
         item.quantity += 1;
+        this.toastrService.success("Item added successfully!", 'Success');
         console.log(`${item.dishName} quantity increased.`);
       },
-      error: (err) => console.error('Error updating quantity:', err),
+      error: (err) => {
+        console.error('Error placing order:', err);
+
+        const errorMsg = err?.error?.message || 'An unexpected error occurred';
+
+        this.toastrService.error(errorMsg, 'Error');
+      },
     });
   }
 
@@ -93,6 +100,7 @@ export class CartComponent implements OnInit {
       this.cartService.decrementCartItem(item.dishId, this.userId).subscribe({
         next: () => {
           item.quantity -= 1;
+          this.toastrService.success('Item removed successfully!', 'Success');
           console.log(`${item.dishName} quantity decreased.`);
         },
         error: (err) => console.error('Error updating quantity:', err),
@@ -103,6 +111,7 @@ export class CartComponent implements OnInit {
           this.cart = this.cart.filter(
             (cartItem) => cartItem.dishId !== item.dishId
           );
+          this.toastrService.success('Item removed successfully!', 'Success');
           console.log(`${item.dishName} removed from cart.`);
         },
         error: (err) => console.error('Error removing item:', err),

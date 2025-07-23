@@ -97,6 +97,10 @@ export class RestaurantComponent {
           },
           error: (err) => {
             console.error(' Failed to add to cart:', err);
+            const errorMsg =
+              err?.error?.message || 'An unexpected error occurred';
+
+            this.toastr.error(errorMsg, 'Error');
           },
         });
       },
